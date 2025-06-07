@@ -7,29 +7,35 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/libdns/libdns"
 
 	"github.com/libdns/namecheap/internal/namecheap"
 )
 
 func parseIntoHostRecord(record libdns.Record) namecheap.HostRecord {
+	rr := record.RR()
+
 	return namecheap.HostRecord{
-		HostID:     record.ID,
-		RecordType: namecheap.RecordType(record.Type),
-		Name:       record.Name,
-		TTL:        uint16(record.TTL.Seconds()),
-		Address:    record.Value,
+		HostID:     uuid.New().String(),
+		RecordType: namecheap.RecordType(rr.Type),
+		Name:       rr.Name,
+		TTL:        uint16(rr.TTL.Seconds()),
+		Address:    rr.Data,
 	}
 }
 
 func parseFromHostRecord(hostRecord namecheap.HostRecord) libdns.Record {
-	return libdns.Record{
-		ID:    hostRecord.HostID,
-		Type:  string(hostRecord.RecordType),
-		Name:  hostRecord.Name,
-		TTL:   time.Duration(hostRecord.TTL) * time.Second,
-		Value: hostRecord.Address,
+	rr := libdns.RR{
+		Name: hostRecord.Name,
+		TTL:  time.Duration(hostRecord.TTL) * time.Second,
+		Type: string(hostRecord.RecordType),
+		Data: hostRecord.Address,
 	}
+	record := libdns.Record(rr)
+
+	return record
 }
 
 // Provider facilitates DNS record manipulation with namecheap.
