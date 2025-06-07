@@ -30,17 +30,17 @@ func TestIntegration(t *testing.T) {
 	}
 
 	newRecords := []libdns.Record{
-		{
-			Type:  "A",
-			Name:  "@",
-			Value: "127.0.0.1",
-			TTL:   time.Second * 1799,
+		libdns.RR{
+			Type: "A",
+			Name: "@",
+			Data: "127.0.0.1",
+			TTL:  time.Second * 1799,
 		},
-		{
-			Type:  "A",
-			Name:  "www",
-			Value: "127.0.0.1",
-			TTL:   time.Second * 1799,
+		libdns.RR{
+			Type: "A",
+			Name: "www",
+			Data: "127.0.0.1",
+			TTL:  time.Second * 1799,
 		},
 	}
 
@@ -59,7 +59,7 @@ func TestIntegration(t *testing.T) {
 	}
 
 	// IDs are not returned by append. Maybe they should be?
-	ignoreIDField := cmpopts.IgnoreFields(libdns.Record{}, "ID")
+	ignoreIDField := cmpopts.IgnoreFields(libdns.RR{}, "ID")
 	if diff := cmp.Diff(addedRecords, records, ignoreIDField); diff != "" {
 		t.Fatalf("Added records not equal to fetched records. Diff: %s", diff)
 	}
@@ -94,17 +94,17 @@ func TestSetRecordsKeepsExisting(t *testing.T) {
 	}
 
 	newRecords := []libdns.Record{
-		{
-			Type:  "A",
-			Name:  "@",
-			Value: "127.0.0.1",
-			TTL:   time.Second * 1799,
+		libdns.RR{
+			Type: "A",
+			Name: "@",
+			Data: "127.0.0.1",
+			TTL:  time.Second * 1799,
 		},
-		{
-			Type:  "A",
-			Name:  "www",
-			Value: "127.0.0.1",
-			TTL:   time.Second * 1799,
+		libdns.RR{
+			Type: "A",
+			Name: "www",
+			Data: "127.0.0.1",
+			TTL:  time.Second * 1799,
 		},
 	}
 
@@ -126,7 +126,7 @@ func TestSetRecordsKeepsExisting(t *testing.T) {
 		t.Fatalf("Expected 2 records. Got: %d", len(records))
 	}
 
-	records[0].Value = "0.0.0.0"
+	//records[0].RR().Data = "0.0.0.0" // TODO: not sure what to do here (noteeee)
 
 	t.Log("Updating record")
 	updatedRecords, err := p.SetRecords(context.TODO(), *domain, records)
@@ -151,7 +151,7 @@ func TestSetRecordsKeepsExisting(t *testing.T) {
 
 	var updatedRecord *libdns.Record
 	for _, record := range updatedRecords {
-		if record.Value == "0.0.0.0" {
+		if record.RR().Data == "0.0.0.0" {
 			updatedRecord = &record
 		}
 	}
