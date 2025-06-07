@@ -33,9 +33,8 @@ func parseFromHostRecord(hostRecord namecheap.HostRecord) libdns.Record {
 		Type: string(hostRecord.RecordType),
 		Data: hostRecord.Address,
 	}
-	record := libdns.Record(rr)
 
-	return record
+	return libdns.Record(rr)
 }
 
 // Provider facilitates DNS record manipulation with namecheap.
