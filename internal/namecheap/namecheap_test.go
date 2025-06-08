@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ElonGaties/libdns-namecheap/internal/namecheap"
 	"github.com/google/go-cmp/cmp"
-	"github.com/libdns/namecheap/internal/namecheap"
 )
 
 const (

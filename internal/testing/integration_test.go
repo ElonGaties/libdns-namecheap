@@ -9,8 +9,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
+	"github.com/ElonGaties/libdns-namecheap"
 	"github.com/libdns/libdns"
-	"github.com/libdns/namecheap"
 )
 
 var (
